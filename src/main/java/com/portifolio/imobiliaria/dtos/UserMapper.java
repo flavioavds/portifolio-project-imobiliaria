@@ -19,9 +19,36 @@ public class UserMapper {
 		return user;
 	}
 	
+	public static UserDTOResponse fromEntity(User user) {
+		UserDTOResponse userDTOResponse = new UserDTOResponse(
+				user.getId(), 
+				user.getName(),
+				user.getEmail(), 
+				user.getPassword(), 
+				new ArrayList<>());
+		
+		if(user.getRoles() != null) {
+	        user.getRoles().forEach(role -> {
+	            if (role.equals(Role.ADMIN)) {
+	            	userDTOResponse.getRoles().add(Role.ADMIN);
+	            } else if (role.equals(Role.USER)) {
+	            	userDTOResponse.getRoles().add(Role.USER);
+	            }
+	        });
+	    }
+		
+		return userDTOResponse;
+				
+	}
+	
 	public static UserSignupDTOResponse signupFromEntity(User user) {
 	    UserSignupDTOResponse userSignupDTOResponse = new UserSignupDTOResponse(
-	            user.getId(), user.getName(), user.getEmail(), user.getPassword(), new ArrayList<>());
+	            user.getId(), 
+	            user.getName(), 
+	            user.getEmail(), 
+	            user.getPassword(), 
+	            new ArrayList<>());
+	    
 	    if(user.getRoles() != null) {
 	        user.getRoles().forEach(role -> {
 	            if (role.equals(Role.ADMIN)) {

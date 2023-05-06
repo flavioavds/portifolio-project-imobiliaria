@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.portifolio.imobiliaria.dtos.UserDTORequest;
+import com.portifolio.imobiliaria.dtos.UserDTOResponse;
 import com.portifolio.imobiliaria.dtos.UserMapper;
 import com.portifolio.imobiliaria.dtos.UserSignupDTOResponse;
 import com.portifolio.imobiliaria.entities.Role;
@@ -72,7 +74,6 @@ public class UserServiceImpl implements UserService{
 		User user = UserMapper.fromDTO(dto);
 		user.setEnabled(false);
 		
-		// Verifica o tipo de usuário e adiciona a role correspondente
 		if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
 			String userType = dto.getRoles().get(0);
 			if (userType.equalsIgnoreCase("ADMIN")) {
@@ -87,6 +88,13 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		return user;
+	}
+
+	@Override
+	public List<UserDTOResponse> findAll() {
+		List<User> users = userRepository.findAll();
+		return users.stream().map(UserMapper::fromEntity)
+                .collect(Collectors.toList());
 	}
 
 }
