@@ -3,6 +3,7 @@ package com.portifolio.imobiliaria.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,8 @@ import com.portifolio.imobiliaria.entities.User;
 import com.portifolio.imobiliaria.exception.UserNotFoundException;
 import com.portifolio.imobiliaria.repositories.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -31,18 +34,8 @@ public class UserServiceImpl implements UserService{
     private MessageSource message;
 
     @Transactional(readOnly = true)
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
     public User getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-    }
-
-    @Transactional
-    public User saveUser(User user) {
-        return userRepository.save(user);
     }
 
     @Transactional
@@ -95,6 +88,20 @@ public class UserServiceImpl implements UserService{
 		List<User> users = userRepository.findAll();
 		return users.stream().map(UserMapper::fromEntity)
                 .collect(Collectors.toList());
+	}
+
+	@Override
+	public UserDTOResponse findById(UUID id, Locale locale) {
+		return UserMapper.fromEntity(userVerify(id, locale));
+	}
+	
+	private User userVerify(UUID id, Locale locale) {
+		Optional<User> optional = userRepository.findById(id);
+		if(optional.isEmpty())
+			throw new EntityNotFoundException(
+					String.format(message.getMessage("user.message.error-non-existent-entity-by-id", null, locale), id)
+					);
+		return optional.get();
 	}
 
 }
