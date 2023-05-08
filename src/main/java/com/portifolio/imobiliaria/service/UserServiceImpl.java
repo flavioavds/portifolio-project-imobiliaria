@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.portifolio.imobiliaria.dtos.user.UpdateUserDTO;
 import com.portifolio.imobiliaria.dtos.user.UserDTORequest;
@@ -24,7 +23,6 @@ import com.portifolio.imobiliaria.dtos.user.UserMapper;
 import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
 import com.portifolio.imobiliaria.entities.Role;
 import com.portifolio.imobiliaria.entities.User;
-import com.portifolio.imobiliaria.exception.UserNotFoundException;
 import com.portifolio.imobiliaria.repositories.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -38,25 +36,24 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private MessageSource message;
 
-    @Transactional(readOnly = true)
-    public User getUserById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-    }
-
-    @Transactional
-    public User updateUser(UUID id, User user) {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(user.getPassword());
-        //existingUser.setUserRoles(user.getUserRoles());
-        return userRepository.save(existingUser);
-    }
-
-    @Transactional
-    public void deleteUser(UUID id) {
-        userRepository.deleteById(id);
-    }
+//    @Transactional(readOnly = true)
+//    public User getUserById(UUID id) {
+//        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+//    }
+//
+//    @Transactional
+//    public User updateUser(UUID id, User user) {
+//        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+//        existingUser.setName(user.getName());
+//        existingUser.setEmail(user.getEmail());
+//        existingUser.setPassword(user.getPassword());
+//        return userRepository.save(existingUser);
+//    }
+//
+//    @Transactional
+//    public void deleteUser(UUID id) {
+//        userRepository.deleteById(id);
+//    }
 
 	@Override
 	public UserSignupDTOResponse create(UserDTORequest dto, Locale locale) {
@@ -170,6 +167,17 @@ public class UserServiceImpl implements UserService{
 	        throw new RuntimeException("Tipo de usuário não especificado");
 	    }
 	    return userOrigin;
+	}
+
+	@Override
+	public UserDTOResponse findByEmail(String email, Locale locale) {
+		Optional<User> optional = userRepository.findByEmailIgnoreCase(email);
+		if (optional.isEmpty())
+            throw new EntityNotFoundException(
+                    String.format(message.getMessage("user.message.error-non-existent-entity-by-email", null, locale), email)
+            );
+
+        return UserMapper.fromEntity(optional.get());
 	}
 
 }

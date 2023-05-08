@@ -64,4 +64,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     
+    @GetMapping(value = "/email/{email}")
+    public ResponseEntity<UserDTOResponse> findByEmail(@PathVariable String email,
+                                                       @RequestHeader(value = "Accept-Language", defaultValue = "en", required = false) String locale) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(service.findByEmail(email, new Locale(locale)));
+    }
+    
 }

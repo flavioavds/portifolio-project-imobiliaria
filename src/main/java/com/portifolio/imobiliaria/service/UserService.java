@@ -19,4 +19,5 @@ public interface UserService {
 	UserDTOResponse update(UUID id, UpdateUserDTO dto, Locale locale);
 	void inactivate(UUID id, Locale locale);    
     void activate(UUID id, Locale locale);
+    UserDTOResponse findByEmail(String email, Locale locale);
 }
