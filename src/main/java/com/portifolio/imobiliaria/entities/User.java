@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -19,11 +21,13 @@ import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_users")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
 	
 	@Id
@@ -43,13 +47,8 @@ public class User {
     @OrderColumn(name = "role_index")
     @Column(name = "role")
 	private Set<Role> roles = new HashSet<>();
-
-	public User() {
-		
-	}
 	
-//	public void addRole() {
-//		roles.add(Role.USER);
-//	}
+	@JsonIgnore
+	private boolean deleted = Boolean.FALSE;
 	
 }

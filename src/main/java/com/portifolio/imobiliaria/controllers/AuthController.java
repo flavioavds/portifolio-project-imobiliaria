@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.portifolio.imobiliaria.dtos.UserDTORequest;
-import com.portifolio.imobiliaria.dtos.UserSignupDTOResponse;
+import com.portifolio.imobiliaria.dtos.user.UserDTORequest;
+import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
 import com.portifolio.imobiliaria.events.OnRegistrationSuccessEvent;
 import com.portifolio.imobiliaria.service.UserService;
 

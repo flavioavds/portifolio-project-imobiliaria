@@ -1,4 +1,4 @@
-package com.portifolio.imobiliaria.dtos;
+package com.portifolio.imobiliaria.dtos.user;
 
 import java.util.List;
 import java.util.UUID;

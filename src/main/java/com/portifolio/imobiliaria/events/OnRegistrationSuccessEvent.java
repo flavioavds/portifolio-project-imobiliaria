@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.portifolio.imobiliaria.dtos.UserSignupDTOResponse;
+import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
 
 public class OnRegistrationSuccessEvent extends ApplicationEvent{
 

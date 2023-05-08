@@ -1,22 +1,27 @@
 package com.portifolio.imobiliaria.service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.portifolio.imobiliaria.dtos.UserDTORequest;
-import com.portifolio.imobiliaria.dtos.UserDTOResponse;
-import com.portifolio.imobiliaria.dtos.UserMapper;
-import com.portifolio.imobiliaria.dtos.UserSignupDTOResponse;
+import com.portifolio.imobiliaria.dtos.user.UpdateUserDTO;
+import com.portifolio.imobiliaria.dtos.user.UserDTORequest;
+import com.portifolio.imobiliaria.dtos.user.UserDTOResponse;
+import com.portifolio.imobiliaria.dtos.user.UserMapper;
+import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
 import com.portifolio.imobiliaria.entities.Role;
 import com.portifolio.imobiliaria.entities.User;
 import com.portifolio.imobiliaria.exception.UserNotFoundException;
@@ -64,23 +69,32 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private User userToEntity(UserDTORequest dto, Locale locale) {
-		User user = UserMapper.fromDTO(dto);
-		user.setEnabled(false);
-		
-		if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
-			String userType = dto.getRoles().get(0);
-			if (userType.equalsIgnoreCase("ADMIN")) {
-				user.setRoles(new HashSet<>(List.of(Role.ADMIN)));
-			} else if (userType.equalsIgnoreCase("USER")) {
-				user.setRoles(new HashSet<>(List.of(Role.USER)));
-			} else {
-				throw new RuntimeException("Tipo de usuário inválido");
-			}
-		} else {
-			throw new RuntimeException("Tipo de usuário não especificado");
-		}
-		
-		return user;
+	    User user = UserMapper.fromDTO(dto);
+	    user.setEnabled(false);
+	    
+	    String userType = getUserType(dto);
+	    user.setRoles(getUserRoles(userType));
+	    
+	    return user;
+	}
+
+	private String getUserType(UserDTORequest dto) {
+	    String userType = "USER";
+	    if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
+	        userType = dto.getRoles().get(0);
+	        if (!Arrays.asList("ADMIN", "USER").contains(userType.toUpperCase())) {
+	            throw new RuntimeException("Tipo de usuário inválido");
+	        }
+	    }
+	    return userType.toUpperCase();
+	}
+
+	private Set<Role> getUserRoles(String userType) {
+	    if ("ADMIN".equals(userType)) {
+	        return Collections.singleton(Role.ADMIN);
+	    } else {
+	        return Collections.singleton(Role.USER);
+	    }
 	}
 
 	@Override
@@ -102,6 +116,60 @@ public class UserServiceImpl implements UserService{
 					String.format(message.getMessage("user.message.error-non-existent-entity-by-id", null, locale), id)
 					);
 		return optional.get();
+	}
+
+	@Override
+	public UserDTOResponse update(UUID id, UpdateUserDTO dto, Locale locale) {
+		User userOrigin = this.findByIdAuth(id, locale);
+		BeanUtils.copyProperties(dto, userOrigin);
+		
+		return UserMapper.fromEntity(userRepository.save(userOrigin));
+	}
+
+	@Override
+	public User findByIdAuth(UUID id, Locale locale) {
+		return userVerify(id, locale);
+	}
+
+	@Override
+	public void inactivate(UUID id, Locale locale) {
+		User user = findByIdAuth(id, locale);
+		user.setEnabled(false);
+		userRepository.save(user);
+		userRepository.deleteById(id);		
+	}
+
+	@Override
+	public void activate(UUID id, Locale locale) {
+		User user = findByIdAuth(id, locale);
+		user.setDeleted(false);
+		user.setEnabled(true);
+		User updateUser = updateUserStepRole(user, locale);
+		userRepository.save(updateUser);
+		
+	}
+	
+	private User updateUserStepRole(User userOrigin, Locale locale) {
+	    if (userOrigin.getRoles() != null && !userOrigin.getRoles().isEmpty()) {
+	        Set<Role> roles = userOrigin.getRoles();
+	        if (roles.size() > 0) {
+	            String userType = roles.iterator().next().name();
+	            Set<Role> newRoles;
+	            if (userType.equalsIgnoreCase("ADMIN")) {
+	                newRoles = new HashSet<>(List.of(Role.ADMIN));
+	            } else if (userType.equalsIgnoreCase("USER")) {
+	                newRoles = new HashSet<>(List.of(Role.USER));
+	            } else {
+	                throw new RuntimeException("Tipo de usuário inválido");
+	            }
+	            userOrigin.setRoles(newRoles);
+	        } else {
+	            throw new RuntimeException("Lista de papéis vazia");
+	        }
+	    } else {
+	        throw new RuntimeException("Tipo de usuário não especificado");
+	    }
+	    return userOrigin;
 	}
 
 }

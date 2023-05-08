@@ -1,4 +1,4 @@
-package com.portifolio.imobiliaria.dtos;
+package com.portifolio.imobiliaria.dtos.user;
 
 import java.util.ArrayList;
 import java.util.HashSet;
