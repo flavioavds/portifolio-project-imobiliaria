@@ -36,25 +36,6 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private MessageSource message;
 
-//    @Transactional(readOnly = true)
-//    public User getUserById(UUID id) {
-//        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-//    }
-//
-//    @Transactional
-//    public User updateUser(UUID id, User user) {
-//        User existingUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-//        existingUser.setName(user.getName());
-//        existingUser.setEmail(user.getEmail());
-//        existingUser.setPassword(user.getPassword());
-//        return userRepository.save(existingUser);
-//    }
-//
-//    @Transactional
-//    public void deleteUser(UUID id) {
-//        userRepository.deleteById(id);
-//    }
-
 	@Override
 	public UserSignupDTOResponse create(UserDTORequest dto, Locale locale) {
 		if(userRepository.findByEmailIgnoreCase(dto.getEmail()).isPresent()) {

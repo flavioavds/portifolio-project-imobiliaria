@@ -5,8 +5,15 @@ import java.util.Locale;
 
 import org.springframework.context.ApplicationEvent;
 
+import com.portifolio.imobiliaria.dtos.person.CnpjDTOResponse;
+import com.portifolio.imobiliaria.dtos.person.CpfDTOResponse;
 import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class OnRegistrationSuccessEvent extends ApplicationEvent{
 
     @Serial
@@ -14,6 +21,8 @@ public class OnRegistrationSuccessEvent extends ApplicationEvent{
     private String appUrl;
 	private Locale locale;
 	private UserSignupDTOResponse user;
+	private CpfDTOResponse cpf;
+	private CnpjDTOResponse cnpj;
 
     public OnRegistrationSuccessEvent(UserSignupDTOResponse user, Locale locale, String appUrl) {
         super(user);
@@ -22,28 +31,18 @@ public class OnRegistrationSuccessEvent extends ApplicationEvent{
 		this.appUrl = appUrl;
     }
 
-    public String getAppUrl() {
-		return appUrl;
-	}
-
-	public void setAppUrl(String appUrl) {
+	public OnRegistrationSuccessEvent(CpfDTOResponse cpf, Locale locale, String appUrl) {
+		super(cpf);
+		this.cpf = cpf;
+		this.locale = locale;
 		this.appUrl = appUrl;
 	}
-
-	public Locale getLocale() {
-		return locale;
-	}
-
-	public void setLocale(Locale locale) {
+    
+	public OnRegistrationSuccessEvent(CnpjDTOResponse cnpj, Locale locale, String appUrl) {
+		super(cnpj);
+		this.cnpj = cnpj;
 		this.locale = locale;
-	}
-
-	public UserSignupDTOResponse getUser() {
-		return user;
-	}
-
-	public void setUser(UserSignupDTOResponse user) {
-		this.user = user;
+		this.appUrl = appUrl;
 	}
     
 }
