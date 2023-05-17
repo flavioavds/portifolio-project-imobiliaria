@@ -47,5 +47,23 @@ public class LegalPerson {
         socios.remove(socio);
         socio.setLegalPerson(null);
     }
+    
+    public Socio findSocioByCpf(String cpf) {
+        for (Socio socio : socios) {
+            if (socio.getCpf().equals(cpf)) {
+                return socio;
+            }
+        }
+        return null; // Retorna null se o sócio não for encontrado
+    }
+
+    public Socio findSocioById(UUID socioId) {
+        for (Socio socio : socios) {
+            if (socio.getId().equals(socioId)) {
+                return socio;
+            }
+        }
+        return null; // Retorna null se o sócio não for encontrado
+    }
 
 }

@@ -33,7 +33,7 @@ public class Socio {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    //@Column(unique = true)
     private String cpf;
 
     @ManyToOne(fetch = FetchType.LAZY)

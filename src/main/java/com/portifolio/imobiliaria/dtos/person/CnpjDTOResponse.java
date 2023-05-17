@@ -3,7 +3,7 @@ package com.portifolio.imobiliaria.dtos.person;
 import java.util.List;
 import java.util.UUID;
 
-import com.portifolio.imobiliaria.entities.Socio;
+import com.portifolio.imobiliaria.dtos.socio.SocioDTOResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +19,6 @@ public class CnpjDTOResponse {
 	private UUID id;
 	private String name;
 	private String cnpj;
-	private List<Socio> socios;
+	private List<SocioDTOResponse> socios;
 
 }
