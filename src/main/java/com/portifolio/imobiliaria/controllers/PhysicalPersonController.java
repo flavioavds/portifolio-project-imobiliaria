@@ -3,8 +3,11 @@ package com.portifolio.imobiliaria.controllers;
 import java.util.Locale;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,6 +42,12 @@ public class PhysicalPersonController {
         CpfDTOResponse response = service.saveCpf(dto, new Locale(locale));
         eventPublisher.publishEvent(new OnRegistrationSuccessEvent(response,  new Locale(locale), request.getContextPath()));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+	
+	@GetMapping("/all")
+    public ResponseEntity<Page<CpfDTOResponse>> getAllPhysicalPersons(Pageable pageable) {
+        Page<CpfDTOResponse> physicalPersonPage = service.findAll(pageable);
+        return ResponseEntity.ok(physicalPersonPage);
     }
 
 }

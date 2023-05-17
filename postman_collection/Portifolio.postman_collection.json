@@ -1,0 +1,519 @@
+{
+	"info": {
+		"_postman_id": "80a2f35a-4b24-4458-921a-d398916f8e43",
+		"name": "Portifolio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25517541"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "SignUp Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Flavio Augusto\",\r\n    \"email\": \"flavio@gmail.com\",\r\n    \"password\": \"123\",\r\n    \"roles\": [\"ADMIN\"] \r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post save c/Role User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Rogerio Venancio\",\r\n    \"email\": \"rogerio@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Find All User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find ById",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Rogerio Venancio\",\r\n    \"email\": \"flavio@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/users/update/62a3abe9-4f39-4bea-be37-9fc6d64558f4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"users",
+								"update",
+								"62a3abe9-4f39-4bea-be37-9fc6d64558f4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Inactive",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/users/6604b1cd-9063-4a5c-9bdc-2ddbbc745d7b/inactivate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"users",
+								"6604b1cd-9063-4a5c-9bdc-2ddbbc745d7b",
+								"inactivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active User Deleted",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/users/6604b1cd-9063-4a5c-9bdc-2ddbbc745d7b/activate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"users",
+								"6604b1cd-9063-4a5c-9bdc-2ddbbc745d7b",
+								"activate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find By Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/users/email/fl",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"users",
+								"email",
+								"fl"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Endereço",
+			"item": [
+				{
+					"name": "Salvando um Endereço",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cep\": \"88054640\",\r\n    \"numero\": \"109\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Person Legal",
+			"item": [
+				{
+					"name": "Save Legal Person",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Empresa X\",\r\n    \"cnpj\": \"89132563000147\",\r\n    \"socios\": [\r\n        {\r\n            \"name\": \"Flavio Augusto Venancio de Souza\",\r\n            \"cpf\": \"01186622105\"\r\n        },\r\n        {\r\n            \"name\": \"Maria Oliveira\",\r\n            \"cpf\": \"53233656769\"\r\n        }\r\n    ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Todos Legal Person",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id Legal Person",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/5d0b77ec-b7e8-4fcc-99ea-60f966338123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"5d0b77ec-b7e8-4fcc-99ea-60f966338123"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Update Legal Person",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Empresa Y\",\r\n    \"cnpj\": \"52428666000149\",\r\n    \"socios\": [\r\n        {\r\n            \"name\": \"Maria Helena\",\r\n            \"cpf\": \"48218644288\"\r\n        },\r\n        {\r\n            \"name\": \"Rogerio Venancio\",\r\n            \"cpf\": \"53233656769\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/update/5506f596-4531-4495-9504-58ae15ccbba5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"update",
+								"5506f596-4531-4495-9504-58ae15ccbba5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Id Socio the Legal Person",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/f724dba3-9690-4f95-9511-0c77d259dbe6/socios/6a301ca9-1688-429c-815a-f4d99cabf4c1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"f724dba3-9690-4f95-9511-0c77d259dbe6",
+								"socios",
+								"6a301ca9-1688-429c-815a-f4d99cabf4c1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Legal Person",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/f724dba3-9690-4f95-9511-0c77d259dbe6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"f724dba3-9690-4f95-9511-0c77d259dbe6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Socio Cpf",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Socio Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/socios/names?name=fla",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"socios",
+								"names"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "fla"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Legal Person Cnpj",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Legal Person Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/search?name=Empresa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Empresa"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Person Physical",
+			"item": [
+				{
+					"name": "Save Physical Person",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Flavio Augusto Venancio de Souza\",\r\n    \"cpf\": \"01186622105\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/physical-persons/cpf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"physical-persons",
+								"cpf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Physical Persons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/physical-persons/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"physical-persons",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
