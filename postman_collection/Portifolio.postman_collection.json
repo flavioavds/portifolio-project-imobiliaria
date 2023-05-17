@@ -512,6 +512,124 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Find By Id Physical Person",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/physical-persons/62846360-8be1-4126-81c0-d25a983ca564",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"physical-persons",
+								"62846360-8be1-4126-81c0-d25a983ca564"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Update Physical Person",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/physical-persons/update/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"physical-persons",
+								"update",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Physical Person",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/physical-persons/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"physical-persons",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Physical Person Cpf",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/physical-persons/cpf?cpf=01186622105",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"physical-persons",
+								"cpf"
+							],
+							"query": [
+								{
+									"key": "cpf",
+									"value": "01186622105"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Physical Person Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/physical-persons/search?name=fla",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"physical-persons",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "fla"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
