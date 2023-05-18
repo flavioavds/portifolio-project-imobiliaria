@@ -1,19 +1,16 @@
 package com.portifolio.imobiliaria.dtos.endereco;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class EnderecoDTORequest {
 	
-	private UUID id;
 	private String cep;
 	private String logradouro;
 	private String complemento;
