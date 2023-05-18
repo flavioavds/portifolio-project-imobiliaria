@@ -6,12 +6,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -151,21 +154,6 @@ public class EnderecoServiceImpl implements EnderecoService{
 		repository.delete(endereco);
 		
 	}
-
-//	@Override
-//	public EnderecoDTOResponse findByCep(String cep, Locale locale) {
-//		Optional<Endereco> optional = repository.findByCep(cep);
-//		
-//		if (optional.isEmpty()) {
-//	        throw new EntityNotFoundException(
-//	            String.format(messages.getMessage("endereco.message.error-not-found-cep", null, locale), cep)
-//	        );
-//	    }
-//		
-//		Endereco endereco = optional.get();
-//		EnderecoDTOResponse enderecoDTOResponse = EnderecoMapper.fromEntity(endereco);
-//		return enderecoDTOResponse;
-//	}
 	
 	@Override
 	public EnderecoDTOResponse findByCep(String cep, Locale locale) {
@@ -197,61 +185,110 @@ public class EnderecoServiceImpl implements EnderecoService{
 	    return enderecoDTOResponse;
 	}
 
-
 	@Override
-	public Page<EnderecoDTOResponse> findByLogradouroStartingWithIgnoreCase(String logradouro, Locale locale,
-			Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<EnderecoDTOResponse> findByLogradouroStartingWithIgnoreCase(String logradouro, Locale locale, Pageable pageable) {
+	    Page<Endereco> enderecoPage = repository.findByLogradouroStartingWithIgnoreCase(logradouro, pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage
+	            .stream()
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
 	}
+
 
 	@Override
 	public Page<EnderecoDTOResponse> findByComplementoStartingWithIgnoreCase(String complemento, Locale locale,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		 Page<Endereco> enderecoPage = repository.findByComplementoStartingWithIgnoreCase(complemento, pageable);
+
+		    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage
+		            .stream()
+		            .map(this::mapEnderecoDTOResponse)
+		            .collect(Collectors.toList());
+
+		    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
 	}
 
 	@Override
 	public Page<EnderecoDTOResponse> findByNumeroStartingWithIgnoreCase(String numero, Locale locale,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		Page<Endereco> enderecoPage = repository.findByNumeroStartingWithIgnoreCase(numero, pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage
+	            .stream()
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
 	}
 
 	@Override
 	public Page<EnderecoDTOResponse> findByBairroStartingWithIgnoreCase(String bairro, Locale locale,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		Page<Endereco> enderecoPage = repository.findByBairroStartingWithIgnoreCase(bairro, pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage
+	            .stream()
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
 	}
 
 	@Override
 	public Page<EnderecoDTOResponse> findByLocalidadeStartingWithIgnoreCase(String localidade, Locale locale,
 			Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		Page<Endereco> enderecoPage = repository.findByLocalidadeStartingWithIgnoreCase(localidade, pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage
+	            .stream()
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
 	}
 
 	@Override
 	public Page<EnderecoDTOResponse> findByUfStartingWithIgnoreCase(String uf, Locale locale, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		Page<Endereco> enderecoPage = repository.findByUfStartingWithIgnoreCase(uf, pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage
+	            .stream()
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
 	}
 
 	@Override
 	public Page<EnderecoDTOResponse> findByLocalidadeAndBairroStartingWithIgnoreCase(String localidade, String bairro,
-			Locale locale, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+	        Locale locale, Pageable pageable) {
+	    Page<Endereco> enderecoPage = repository.findByLocalidadeAndBairroStartingWithIgnoreCase(localidade, bairro, pageable);
+	    return enderecoPage.map(this::mapEnderecoDTOResponse);
 	}
+
 
 	@Override
 	public Page<EnderecoDTOResponse> findByLogradouroAndBairroStartingWithIgnoreCase(String logradouro, String bairro,
-			Locale locale, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
+	        Locale locale, Pageable pageable) {
+	    Page<Endereco> enderecoPage = repository.findByLogradouroAndBairroStartingWithIgnoreCase(logradouro, bairro, pageable);
+	    return enderecoPage.map(this::mapEnderecoDTOResponse);
+	}
+	
+	private EnderecoDTOResponse mapEnderecoDTOResponse(Endereco endereco) {
+		EnderecoDTOResponse enderecoDTOResponse = new EnderecoDTOResponse();
+		enderecoDTOResponse.setId(endereco.getId());
+		enderecoDTOResponse.setCep(endereco.getCep());
+		enderecoDTOResponse.setLogradouro(endereco.getLogradouro());
+		enderecoDTOResponse.setComplemento(endereco.getComplemento());
+		enderecoDTOResponse.setNumero(endereco.getNumero());
+		enderecoDTOResponse.setBairro(endereco.getBairro());
+		enderecoDTOResponse.setLocalidade(endereco.getLocalidade());
+		enderecoDTOResponse.setUf(endereco.getUf());
+		return enderecoDTOResponse;
+	}
 	
 
 }

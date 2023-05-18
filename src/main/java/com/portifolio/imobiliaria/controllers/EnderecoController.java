@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +75,88 @@ public class EnderecoController {
 	 public ResponseEntity<EnderecoDTOResponse> findByCep(@RequestParam("cep") String cep, Locale locale) {
 	     EnderecoDTOResponse response = service.findByCep(cep, locale);
 	     return ResponseEntity.ok(response);
+	 }
+	 
+	 @GetMapping("/logradouro")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByLogradouroStartingWithIgnoreCase(
+	         @RequestParam("logradouro") String logradouro,
+	         @PageableDefault(sort = "logradouro", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByLogradouroStartingWithIgnoreCase(logradouro, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+
+	 @GetMapping("/complemento")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByComplementoStartingWithIgnoreCase(
+	         @RequestParam("complemento") String complemento,
+	         @PageableDefault(sort = "complemento", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByComplementoStartingWithIgnoreCase(complemento, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+	 
+	 @GetMapping("/numero")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByNumeroStartingWithIgnoreCase(
+	         @RequestParam("numero") String numero,
+	         @PageableDefault(sort = "numero", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByNumeroStartingWithIgnoreCase(numero, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+	 
+	 @GetMapping("/bairro")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByBairroStartingWithIgnoreCase(
+	         @RequestParam("bairro") String bairro,
+	         @PageableDefault(sort = "numero", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByBairroStartingWithIgnoreCase(bairro, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+	 
+	 @GetMapping("/localidade")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByLocalidadeStartingWithIgnoreCase(
+	         @RequestParam("localidade") String localidade,
+	         @PageableDefault(sort = "localidade", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByLocalidadeStartingWithIgnoreCase(localidade, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+	 
+	 @GetMapping("/uf")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByUfStartingWithIgnoreCase(
+	         @RequestParam("uf") String uf,
+	         @PageableDefault(sort = "uf", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByUfStartingWithIgnoreCase(uf, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+	 
+	 @GetMapping("/localidade-bairro")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByLocalidadeAndBairroStartingWithIgnoreCase(
+	         @RequestParam("localidade") String localidade,
+	         @RequestParam("bairro") String bairro,
+	         @PageableDefault(sort = "logradouro", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByLocalidadeAndBairroStartingWithIgnoreCase(localidade, bairro, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+
+	 @GetMapping("/logradouro-bairro")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByLogradouroAndBairroStartingWithIgnoreCase(
+	         @RequestParam("logradouro") String logradouro,
+	         @RequestParam("bairro") String bairro,
+	         @PageableDefault(sort = "logradouro", direction = Sort.Direction.ASC) Pageable pageable,
+	         Locale locale) {
+
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByLogradouroAndBairroStartingWithIgnoreCase(logradouro, bairro, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
 	 }
 
 

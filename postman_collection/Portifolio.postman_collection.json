@@ -354,6 +354,230 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Endereco findByLogradouroStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/logradouro?logradouro=ser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"logradouro"
+							],
+							"query": [
+								{
+									"key": "logradouro",
+									"value": "ser"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByComplementoStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/complemento?complemento=",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"complemento"
+							],
+							"query": [
+								{
+									"key": "complemento",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByNumeroStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/numero?numero=109",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"numero"
+							],
+							"query": [
+								{
+									"key": "numero",
+									"value": "109"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByBairroStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/bairro?bairro=cana",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"bairro"
+							],
+							"query": [
+								{
+									"key": "bairro",
+									"value": "cana"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByLocalidadeStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/localidade?localidade=flo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"localidade"
+							],
+							"query": [
+								{
+									"key": "localidade",
+									"value": "flo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByUfStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/uf?uf=sc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"uf"
+							],
+							"query": [
+								{
+									"key": "uf",
+									"value": "sc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByLocalidadeAndBairroStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/localidade-bairro?localidade=Florianópolis&bairro=Canasvieiras",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"localidade-bairro"
+							],
+							"query": [
+								{
+									"key": "localidade",
+									"value": "Florianópolis"
+								},
+								{
+									"key": "bairro",
+									"value": "Canasvieiras"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByLogradouroAndBairroStartingWithIgnoreCase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/logradouro-bairro?logradouro=ser&bairro=cana",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"logradouro-bairro"
+							],
+							"query": [
+								{
+									"key": "logradouro",
+									"value": "ser"
+								},
+								{
+									"key": "bairro",
+									"value": "cana"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
