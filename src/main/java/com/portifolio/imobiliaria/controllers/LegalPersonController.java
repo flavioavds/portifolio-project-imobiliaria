@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.portifolio.imobiliaria.dtos.person.CnpjDTORequest;
 import com.portifolio.imobiliaria.dtos.person.CnpjDTOResponse;
+import com.portifolio.imobiliaria.dtos.socio.SocioDTORequest;
 import com.portifolio.imobiliaria.dtos.socio.SocioDTOResponse;
 import com.portifolio.imobiliaria.entities.Socio;
 import com.portifolio.imobiliaria.events.OnRegistrationSuccessEvent;
@@ -34,6 +37,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/v1/legal-persons")
 public class LegalPersonController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LegalPersonController.class);
 	
 	private final LegalPersonService legalPersonService;
 	private final ApplicationEventPublisher eventPublisher;
@@ -73,6 +78,18 @@ public class LegalPersonController {
 					.body(legalPersonService.update(id, dto, new Locale(locale)));
 	}
 	
+	@PostMapping("/{legalPersonId}/socios")
+	public ResponseEntity<CnpjDTOResponse> addSocio(@PathVariable UUID legalPersonId,
+	                                                @RequestBody SocioDTORequest socioDTO,
+	                                                @RequestHeader(value = "Accept-Language", defaultValue = "en", required = false) String locale) {
+	    logger.info("Adding socio for legalPersonId={}, socioDTO={}", legalPersonId, socioDTO);
+
+	    CnpjDTOResponse cnpjDTOResponse = legalPersonService.addSocio(legalPersonId, socioDTO, new Locale(locale));
+	    logger.info("Socio added: {}", cnpjDTOResponse);
+
+	    return ResponseEntity.status(HttpStatus.CREATED).body(cnpjDTOResponse);
+	}
+
 	@DeleteMapping("/{legalPersonId}/socios/{socioId}")
     public ResponseEntity<String> deleteSocio(@PathVariable UUID legalPersonId, @PathVariable UUID socioId) {
         Locale locale = Locale.getDefault();

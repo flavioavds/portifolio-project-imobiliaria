@@ -32,7 +32,7 @@ public class LegalPerson {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(name = "cnpj")
     private String cnpj;
 
     @OneToMany(mappedBy = "legalPerson", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -64,6 +64,11 @@ public class LegalPerson {
             }
         }
         return null; // Retorna null se o sócio não for encontrado
+    }
+
+    @Override
+    public String toString() {
+        return "LegalPerson [id=" + id + ", name=" + name + ", cnpj=" + cnpj + ", sociosCount=" + socios.size() + "]";
     }
 
 }

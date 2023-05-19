@@ -20,6 +20,9 @@ public interface EnderecoService {
 	Page<EnderecoDTOResponse> findByLogradouroStartingWithIgnoreCase(String logradouro, Locale locale, Pageable pageable);
 	Page<EnderecoDTOResponse> findByComplementoStartingWithIgnoreCase(String complemento, Locale locale, Pageable pageable);
 	Page<EnderecoDTOResponse> findByNumeroStartingWithIgnoreCase(String numero, Locale locale, Pageable pageable);
+	Page<EnderecoDTOResponse> findByNumeroBetween(String numero, Integer numeroInicial, Integer numeroFinal, Locale locale, Pageable pageable);
+	Page<EnderecoDTOResponse> findByNumeroLessThanOrEqual(String numero, Locale locale, Pageable pageable);
+	Page<EnderecoDTOResponse> findByNumeroGreaterThanOrEqual(String numero, Locale locale, Pageable pageable);
 	Page<EnderecoDTOResponse> findByBairroStartingWithIgnoreCase(String bairro, Locale locale, Pageable pageable);
 	Page<EnderecoDTOResponse> findByLocalidadeStartingWithIgnoreCase(String localidade, Locale locale, Pageable pageable);
 	Page<EnderecoDTOResponse> findByUfStartingWithIgnoreCase(String uf, Locale locale, Pageable pageable);

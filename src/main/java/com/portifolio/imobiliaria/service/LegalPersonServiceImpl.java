@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,8 @@ import com.portifolio.imobiliaria.dtos.socio.SocioDTOResponse;
 import com.portifolio.imobiliaria.dtos.socio.SocioMapper;
 import com.portifolio.imobiliaria.entities.LegalPerson;
 import com.portifolio.imobiliaria.entities.Socio;
+import com.portifolio.imobiliaria.exception.DuplicatedCnpjException;
+import com.portifolio.imobiliaria.exception.DuplicatedCpfException;
 import com.portifolio.imobiliaria.exception.InvalidDocumentException;
 import com.portifolio.imobiliaria.repositories.LegalPersonRepository;
 import com.portifolio.imobiliaria.repositories.SocioRepository;
@@ -30,6 +34,9 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class LegalPersonServiceImpl implements LegalPersonService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LegalPersonServiceImpl.class);
+
 	
 	private final LegalPersonRepository repository;
 	private final SocioRepository socioRepository;
@@ -46,24 +53,39 @@ public class LegalPersonServiceImpl implements LegalPersonService {
 	@Override
 	public CnpjDTOResponse saveCnpj(CnpjDTORequest dto, Locale locale) {
 	    LegalPerson legalPerson = LegalPersonMapper.fromDTO(dto);
-	    
+
 	    ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
-	    if (!validationCPF_CNPJ.isValidCNPJ(dto.getCnpj())) {
+	    String cnpj = dto.getCnpj().replaceAll("[^0-9]", ""); // Remove todos os caracteres não numéricos do CNPJ
+	    cnpj = formatCnpj(cnpj); // Formata o CNPJ para o formato desejado
+
+	    if (!validationCPF_CNPJ.isValidCNPJ(cnpj)) {
 	        throw new InvalidDocumentException(
-	                String.format(messages.getMessage("person.message.error-ivalid-cnpj", null, locale))
+	            String.format(messages.getMessage("person.message.error-ivalid-cnpj", null, locale))
 	        );
 	    }
-	    
+
+	    Optional<LegalPerson> existingLegalPerson = repository.findByCnpj(cnpj);
+	    if (existingLegalPerson.isPresent()) {
+	        throw new DuplicatedCnpjException(
+	            String.format(messages.getMessage("person.message.error-cnpj-already-registered", null, locale))
+	        );
+	    }
+
+	    legalPerson.setCnpj(cnpj); // Salva o CNPJ diretamente no formato desejado
+
 	    List<Socio> socios = new ArrayList<>();
 
 	    for (SocioDTORequest socioDTO : dto.getSocios()) {
-	        if (!validationCPF_CNPJ.isValidCPF(socioDTO.getCpf())) {
+	        String cpf = formatCpf(socioDTO.getCpf().replaceAll("[^0-9]", "")); // Remove todos os caracteres não numéricos do CPF e formata o CPF
+
+	        if (!validationCPF_CNPJ.isValidCPF(cpf)) {
 	            throw new InvalidDocumentException(
-	                    String.format(messages.getMessage("person.message.error-ivalid-cpf", null, locale))
+	                String.format(messages.getMessage("person.message.error-ivalid-cpf", null, locale))
 	            );
 	        }
 	        Socio socio = SocioMapper.fromDTO(socioDTO);
 	        socio.setLegalPerson(legalPerson);
+	        socio.setCpf(cpf); // Salva o CPF diretamente no formato desejado
 	        socios.add(socio);
 	    }
 
@@ -71,12 +93,30 @@ public class LegalPersonServiceImpl implements LegalPersonService {
 
 	    LegalPerson savedLegalPerson = repository.save(legalPerson);
 
+	    // Remover pontos e barras novamente antes de salvar no banco
+	    String formattedCnpj = savedLegalPerson.getCnpj().replaceAll("[^0-9]", "");
+	    savedLegalPerson.setCnpj(formatCnpj(formattedCnpj));
+
 	    CnpjDTOResponse cnpjDTOResponse = LegalPersonMapper.fromEntity(savedLegalPerson);
 	    cnpjDTOResponse.setSocios(socios.stream()
 	            .map(SocioMapper::toDTO)
 	            .collect(Collectors.toList()));
 
 	    return cnpjDTOResponse;
+	}
+
+	private String formatCnpj(String cnpj) {
+	    if (cnpj.length() == 14) {
+	        return cnpj;
+	    } else if (cnpj.length() == 18) {
+	        return cnpj.replaceAll("[^0-9]", "");
+	    } else {
+	        throw new IllegalArgumentException("CNPJ inválido: " + cnpj);
+	    }
+	}
+
+	private String formatCpf(String cpf) {
+	    return cpf.replaceAll("[^0-9]", "");
 	}
 	
 	@Override
@@ -126,7 +166,7 @@ public class LegalPersonServiceImpl implements LegalPersonService {
 	public LegalPerson findByEntity(UUID id, Locale locale) {
 		return legalPersonVerifyById(id, locale);
 	}
-
+	
 	@Override
 	public CnpjDTOResponse update(UUID id, CnpjDTORequest dto, Locale locale) {
 	    LegalPerson legalPerson = legalPersonVerifyById(id, locale);
@@ -135,34 +175,50 @@ public class LegalPersonServiceImpl implements LegalPersonService {
 	    legalPerson.setName(dto.getName());
 
 	    ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
-	    if (!validationCPF_CNPJ.isValidCNPJ(dto.getCnpj())) {
+	    String cnpj = formatCnpj(dto.getCnpj()); // Formata o CNPJ para o formato desejado
+
+	    if (!validationCPF_CNPJ.isValidCNPJ(cnpj)) {
 	        throw new InvalidDocumentException(
-	                String.format(messages.getMessage("person.message.error-ivalid-cnpj", null, locale))
+	            String.format(messages.getMessage("person.message.error-ivalid-cnpj", null, locale))
 	        );
 	    }
-	    legalPerson.setCnpj(dto.getCnpj());
+
+	    Optional<LegalPerson> existingLegalPerson = repository.findByCnpj(cnpj);
+	    if (existingLegalPerson.isPresent() && !existingLegalPerson.get().getId().equals(id)) {
+	        throw new DuplicatedCnpjException(
+	            String.format(messages.getMessage("person.message.error-cnpj-already-registered", null, locale))
+	        );
+	    }
+
+	    legalPerson.setCnpj(cnpj); // Salva o CNPJ diretamente no formato desejado
 
 	    List<Socio> updatedSocios = new ArrayList<>();
 
 	    for (SocioDTORequest socioDTO : dto.getSocios()) {
-	        if (!validationCPF_CNPJ.isValidCPF(socioDTO.getCpf())) {
+	        String cpf = formatCpf(socioDTO.getCpf()); // Formata o CPF para o formato desejado
+
+	        if (!validationCPF_CNPJ.isValidCPF(cpf)) {
 	            throw new InvalidDocumentException(
-	                    String.format(messages.getMessage("person.message.error-ivalid-cpf", null, locale))
+	                String.format(messages.getMessage("person.message.error-ivalid-cpf", null, locale))
 	            );
 	        }
 
-	        Socio existingSocio = legalPerson.findSocioByCpf(socioDTO.getCpf());
+	        Optional<Socio> existingSocio = existingLegalPerson.flatMap(person -> person.getSocios().stream()
+	                .filter(socio -> formatCpf(socio.getCpf()).equals(cpf))
+	                .findFirst());
 
-	        if (existingSocio != null) {
-	            // Atualiza os dados do sócio existente
-	            existingSocio.setName(socioDTO.getName());
-	            updatedSocios.add(existingSocio);
-	        } else {
-	            // Cria um novo sócio e adiciona à lista de sócios atualizados
-	            Socio newSocio = SocioMapper.fromDTO(socioDTO);
-	            newSocio.setLegalPerson(legalPerson);
-	            updatedSocios.add(newSocio);
+	        if (existingSocio.isPresent() && !existingSocio.get().getLegalPerson().getId().equals(id)) {
+	            throw new DuplicatedCpfException(
+	                String.format(messages.getMessage("person.message.error-cpf-already-registered", null, locale))
+	            );
 	        }
+	        
+	        Socio socio = existingSocio.orElseGet(() -> SocioMapper.fromDTO(socioDTO));
+	        socio.setLegalPerson(legalPerson);
+	        socio.setName(socioDTO.getName());
+	        socio.setCpf(formatCpf(socioDTO.getCpf())); // Formata o CPF antes de salvar
+	        updatedSocios.add(socio);
+
 	    }
 
 	    // Define a lista atualizada de sócios
@@ -170,6 +226,9 @@ public class LegalPersonServiceImpl implements LegalPersonService {
 	    legalPerson.getSocios().addAll(updatedSocios);
 
 	    LegalPerson savedLegalPerson = repository.save(legalPerson);
+
+	    // Remover pontos e traço novamente antes de salvar no banco
+	    savedLegalPerson.getSocios().forEach(socio -> socio.setCpf(formatCpf(socio.getCpf())));
 
 	    CnpjDTOResponse cnpjDTOResponse = LegalPersonMapper.fromEntity(savedLegalPerson);
 
@@ -180,7 +239,7 @@ public class LegalPersonServiceImpl implements LegalPersonService {
 	    cnpjDTOResponse.setSocios(socioDTOs);
 
 	    return cnpjDTOResponse;
-	}
+	}	
 	
 	private void legalPersonValidatedName(String name, Locale locale) {
 		if(repository.findByNameIgnoreCase(name).isPresent()) {
@@ -199,6 +258,48 @@ public class LegalPersonServiceImpl implements LegalPersonService {
 		}
 		new LegalPerson();
 	}
+	
+	@Override
+	public CnpjDTOResponse addSocio(UUID legalPersonId, SocioDTORequest socioDTO, Locale locale) {
+	    logger.info("Adding socio: legalPersonId={}, socioDTO={}", legalPersonId, socioDTO);
+
+	    LegalPerson legalPerson = legalPersonVerifyById(legalPersonId, locale);
+	    logger.info("LegalPerson retrieved: {}", legalPerson);
+
+	    String cpf = formatCpf(socioDTO.getCpf());
+
+	    ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
+	    if (!validationCPF_CNPJ.isValidCPF(cpf)) {
+	        throw new InvalidDocumentException(
+	            String.format(messages.getMessage("person.message.error-invalid-cpf", null, locale))
+	        );
+	    }
+
+	    Optional<Socio> existingSocio = legalPerson.getSocios().stream()
+	            .filter(socio -> formatCpf(socio.getCpf()).equals(cpf))
+	            .findFirst();
+
+	    if (existingSocio.isPresent()) {
+	        throw new DuplicatedCpfException(
+	            String.format(messages.getMessage("person.message.error-cpf-already-registered", null, locale))
+	        );
+	    }
+
+	    Socio socio = SocioMapper.fromDTO(socioDTO);
+	    socio.setLegalPerson(legalPerson);
+	    socio.setName(socioDTO.getName());
+
+	    legalPerson.getSocios().add(socio);
+	    repository.save(legalPerson);
+
+	    // Remover pontos e traço novamente antes de retornar a resposta
+	    legalPerson.getSocios().forEach(s -> s.setCpf(formatCpf(s.getCpf())));
+
+	    CnpjDTOResponse cnpjDTOResponse = LegalPersonMapper.fromEntity(legalPerson);
+	    return cnpjDTOResponse;
+	}
+
+
 
 	@Override
 	public void deleteSocio(UUID legalPersonId, UUID socioId, Locale locale) {

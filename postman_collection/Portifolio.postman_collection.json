@@ -437,6 +437,101 @@
 					"response": []
 				},
 				{
+					"name": "Get Endereco findByNumeroBetween",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/enderecos?numeroInicial=50&numeroFinal=200",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"enderecos"
+							],
+							"query": [
+								{
+									"key": "numeroInicial",
+									"value": "50"
+								},
+								{
+									"key": "numeroFinal",
+									"value": "200"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByNumeroLessThanOrEqual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/enderecos/numero-less-than-equal?numero=20&page=0&size=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"enderecos",
+								"numero-less-than-equal"
+							],
+							"query": [
+								{
+									"key": "numero",
+									"value": "20"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereco findByNumeroGreaterThanOrEqual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/endereco/enderecos/numero-greater-than-equal?numero=100",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"endereco",
+								"enderecos",
+								"numero-greater-than-equal"
+							],
+							"query": [
+								{
+									"key": "numero",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Endereco findByBairroStartingWithIgnoreCase",
 					"request": {
 						"method": "GET",
@@ -585,13 +680,43 @@
 			"name": "Person Legal",
 			"item": [
 				{
-					"name": "Save Legal Person",
+					"name": "Save Legal Person com Formatação de xx.xxx.xxx/xxxx-xx CNPJ e xxx.xxx.-xx CPF",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Empresa X\",\r\n    \"cnpj\": \"89132563000147\",\r\n    \"socios\": [\r\n        {\r\n            \"name\": \"Flavio Augusto Venancio de Souza\",\r\n            \"cpf\": \"01186622105\"\r\n        },\r\n        {\r\n            \"name\": \"Maria Oliveira\",\r\n            \"cpf\": \"53233656769\"\r\n        }\r\n    ]\r\n}\r\n",
+							"raw": "    {\r\n        \"name\": \"Empresa X\",\r\n        \"cnpj\": \"89.132.563/0001-47\",\r\n        \"socios\": [\r\n            {\r\n                \"name\": \"Flavio Augusto Venancio de Souza\",\r\n                \"cpf\": \"396.583.823-71\"\r\n            },\r\n            {\r\n                \"name\": \"Maria Oliveira\",\r\n                \"cpf\": \"61843918790\"\r\n            }\r\n        ]\r\n    }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Legal Person sem Formatação de CNPJ e CPF dos Socios",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Empresa X\",\r\n    \"cnpj\": \"73765975000184\",\r\n    \"socios\": [\r\n        {\r\n            \"name\": \"Flavio Augusto Venancio de Souza\",\r\n            \"cpf\": \"01186622105\"\r\n        },\r\n        {\r\n            \"name\": \"Maria Oliveira\",\r\n            \"cpf\": \"53233656769\"\r\n        }\r\n    ]\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -641,7 +766,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/v1/legal-persons/5d0b77ec-b7e8-4fcc-99ea-60f966338123",
+							"raw": "http://localhost:8080/v1/legal-persons/8a45d897-4a5d-43b2-98b7-c3d9e5752dbe",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -650,7 +775,7 @@
 							"path": [
 								"v1",
 								"legal-persons",
-								"5d0b77ec-b7e8-4fcc-99ea-60f966338123"
+								"8a45d897-4a5d-43b2-98b7-c3d9e5752dbe"
 							]
 						}
 					},
@@ -663,7 +788,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Empresa Y\",\r\n    \"cnpj\": \"52428666000149\",\r\n    \"socios\": [\r\n        {\r\n            \"name\": \"Maria Helena\",\r\n            \"cpf\": \"48218644288\"\r\n        },\r\n        {\r\n            \"name\": \"Rogerio Venancio\",\r\n            \"cpf\": \"53233656769\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"Empresa Y\",\r\n    \"cnpj\": \"52.428.666/0001-49\",\r\n    \"socios\": [\r\n        {\r\n            \"name\": \"Maria Helena\",\r\n            \"cpf\": \"482.186.442-88\"\r\n        },\r\n        {\r\n            \"name\": \"Rogerio Venancio\",\r\n            \"cpf\": \"53233656769\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -671,7 +796,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/v1/legal-persons/update/5506f596-4531-4495-9504-58ae15ccbba5",
+							"raw": "http://localhost:8080/v1/legal-persons/update/8a45d897-4a5d-43b2-98b7-c3d9e5752dbe",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -681,7 +806,38 @@
 								"v1",
 								"legal-persons",
 								"update",
-								"5506f596-4531-4495-9504-58ae15ccbba5"
+								"8a45d897-4a5d-43b2-98b7-c3d9e5752dbe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Adicionando Socio",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Leonardo Abilio\",\r\n    \"cpf\": \"022.323.833-34\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/legal-persons/8a45d897-4a5d-43b2-98b7-c3d9e5752dbe/socios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"legal-persons",
+								"8a45d897-4a5d-43b2-98b7-c3d9e5752dbe",
+								"socios"
 							]
 						}
 					},

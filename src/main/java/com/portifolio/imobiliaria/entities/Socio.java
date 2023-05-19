@@ -41,4 +41,9 @@ public class Socio {
     @JsonIgnore // Adicionado para evitar recursão infinita
     private LegalPerson legalPerson;
 
+	@Override
+	public String toString() {
+		return "Socio [id=" + id + ", name=" + name + ", cpf=" + cpf + ", legalPerson=" + legalPerson + "]";
+	}
+
 }

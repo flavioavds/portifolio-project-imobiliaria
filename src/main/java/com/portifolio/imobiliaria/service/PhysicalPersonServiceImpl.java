@@ -16,6 +16,7 @@ import com.portifolio.imobiliaria.dtos.person.CpfDTORequest;
 import com.portifolio.imobiliaria.dtos.person.CpfDTOResponse;
 import com.portifolio.imobiliaria.dtos.person.PhysicalPersonMapper;
 import com.portifolio.imobiliaria.entities.PhysicalPerson;
+import com.portifolio.imobiliaria.exception.DuplicatedCpfException;
 import com.portifolio.imobiliaria.exception.InvalidDocumentException;
 import com.portifolio.imobiliaria.repositories.PhysicalPersonRepository;
 import com.portifolio.imobiliaria.valid.ValidationCPF_CNPJ;
@@ -34,20 +35,51 @@ public class PhysicalPersonServiceImpl implements PhysicalPersonService{
 		this.messages = messages;
 	}
 
+//	@Override
+//	public CpfDTOResponse saveCpf(CpfDTORequest dto, Locale locale) {
+//		ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
+//		if (!validationCPF_CNPJ.isValidCPF(dto.getCpf())) {
+//	    	throw new InvalidDocumentException(
+//	    			String.format(messages.getMessage("person.message.error-ivalid-cpf", null, locale))
+//	    			);
+//	    }
+//	    return PhysicalPersonMapper.cpfFromPhysicalPersonEntity(repository.save(cpfToEntity(dto, locale)));
+//	}
+//	
+//	private PhysicalPerson cpfToEntity(CpfDTORequest dto, Locale locale) {
+//		PhysicalPerson person = PhysicalPersonMapper.fromPersonDTOCpf(dto);
+//		return person;
+//	}
+	
 	@Override
 	public CpfDTOResponse saveCpf(CpfDTORequest dto, Locale locale) {
-		ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
-		if (!validationCPF_CNPJ.isValidCPF(dto.getCpf())) {
-	    	throw new InvalidDocumentException(
-	    			String.format(messages.getMessage("person.message.error-ivalid-cpf", null, locale))
-	    			);
+	    ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
+	    String cleanedCpf = cleanCpf(dto.getCpf()); // Remover pontos e traços do CPF
+	    if (!validationCPF_CNPJ.isValidCPF(cleanedCpf)) {
+	        throw new InvalidDocumentException(
+	                String.format(messages.getMessage("person.message.error-invalid-cpf", null, locale))
+	        );
 	    }
-	    return PhysicalPersonMapper.cpfFromPhysicalPersonEntity(repository.save(cpfToEntity(dto, locale)));
+	    dto.setCpf(cleanedCpf); // Atualizar o DTO com o CPF limpo
+	    
+	    Optional<PhysicalPerson> existingPhysicalPerson = repository.findByCpf(cleanedCpf);
+	    if (existingPhysicalPerson.isPresent()) {
+	        throw new DuplicatedCpfException(
+	            String.format(messages.getMessage("person.message.error-cpf-already-registered", null, locale))
+	        );
+	    }
+	    
+	    return PhysicalPersonMapper.cpfFromPhysicalPersonEntity(repository.save(dtoToEntity(dto, locale)));
 	}
-	
-	private PhysicalPerson cpfToEntity(CpfDTORequest dto, Locale locale) {
-		PhysicalPerson person = PhysicalPersonMapper.fromPersonDTOCpf(dto);
-		return person;
+
+	private PhysicalPerson dtoToEntity(CpfDTORequest dto, Locale locale) {
+	    PhysicalPerson person = PhysicalPersonMapper.fromPersonDTOCpf(dto);
+	    // Configure as outras propriedades da entidade 'person' aqui, se necessário
+	    return person;
+	}
+
+	private String cleanCpf(String cpf) {
+	    return cpf.replaceAll("[^0-9]", ""); // Remover todos os caracteres não numéricos
 	}
 
 	@Override
@@ -79,22 +111,32 @@ public class PhysicalPersonServiceImpl implements PhysicalPersonService{
 
 	@Override
 	public CpfDTOResponse update(UUID id, CpfDTORequest dto, Locale locale) {
-		PhysicalPerson physicalPerson = physicalPersonById(id, locale);
-		physicalPersonValidatedName(dto.getName(), locale);
-		physicalPersonValidatedCPF(dto.getCpf(), locale);
-		ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
-		 if (!validationCPF_CNPJ.isValidCPF(dto.getCpf())) {
-		        throw new InvalidDocumentException(
-		                String.format(messages.getMessage("person.message.error-ivalid-cpf", null, locale))
-		        );
-		    }
-		physicalPerson.setCpf(dto.getCpf());
-		physicalPerson.setName(dto.getName());
-		
-		PhysicalPerson savedPhysicalPerson = repository.save(physicalPerson);
-		CpfDTOResponse cpfDTOResponse = PhysicalPersonMapper.cpfFromPhysicalPersonEntity(savedPhysicalPerson);
-		
-		return cpfDTOResponse;
+	    PhysicalPerson physicalPerson = physicalPersonById(id, locale);
+	    physicalPersonValidatedName(dto.getName(), locale);
+	    physicalPersonValidatedCPF(dto.getCpf(), locale);
+	    ValidationCPF_CNPJ validationCPF_CNPJ = new ValidationCPF_CNPJ();
+	    String cleanedCpf = cleanCpf(dto.getCpf()); // Remover pontos e traços do CPF
+	    if (!validationCPF_CNPJ.isValidCPF(cleanedCpf)) {
+	        throw new InvalidDocumentException(
+	                String.format(messages.getMessage("person.message.error-invalid-cpf", null, locale))
+	        );
+	    }
+	    dto.setCpf(cleanedCpf); // Atualizar o DTO com o CPF limpo
+	    
+	    Optional<PhysicalPerson> existingPhysicalPerson = repository.findByCpfExcludingId(cleanedCpf, id);
+	    if (existingPhysicalPerson.isPresent()) {
+	        throw new DuplicatedCpfException(
+	            String.format(messages.getMessage("person.message.error-cpf-already-registered", null, locale))
+	        );
+	    }
+	    
+	    physicalPerson.setCpf(dto.getCpf());
+	    physicalPerson.setName(dto.getName());
+	    
+	    PhysicalPerson savedPhysicalPerson = repository.save(physicalPerson);
+	    CpfDTOResponse cpfDTOResponse = PhysicalPersonMapper.cpfFromPhysicalPersonEntity(savedPhysicalPerson);
+	    
+	    return cpfDTOResponse;
 	}
 	
 	private void physicalPersonValidatedName(String name, Locale locale) {

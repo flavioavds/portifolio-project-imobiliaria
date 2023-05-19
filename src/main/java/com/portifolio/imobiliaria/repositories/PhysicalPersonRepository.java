@@ -18,5 +18,9 @@ public interface PhysicalPersonRepository extends JpaRepository<PhysicalPerson, 
 	
 	@Query("SELECT s FROM PhysicalPerson s WHERE lower(s.name) LIKE lower(concat(:name, '%'))")
 	List<PhysicalPerson> findByNameStartingWithIgnoreCase(@Param("name") String name);
+	
+	@Query("SELECT p FROM PhysicalPerson p WHERE p.cpf = :cpf AND p.id <> :id")
+    Optional<PhysicalPerson> findByCpfExcludingId(@Param("cpf") String cpf, @Param("id") UUID id);
+
 
 }

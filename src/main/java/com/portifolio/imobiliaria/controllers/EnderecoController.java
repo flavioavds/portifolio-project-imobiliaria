@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -97,6 +98,14 @@ public class EnderecoController {
 	     return ResponseEntity.ok(enderecoPage);
 	 }
 	 
+	 @GetMapping("/enderecos")
+	 public Page<EnderecoDTOResponse> getEnderecosByNumeroRange(
+	         @RequestParam("numeroInicial") Integer numeroInicial,
+	         @RequestParam("numeroFinal") Integer numeroFinal,
+	         Pageable pageable) {
+	     return service.findByNumeroBetween(null, numeroInicial, numeroFinal, Locale.getDefault(), pageable);
+	 }
+	 
 	 @GetMapping("/numero")
 	 public ResponseEntity<Page<EnderecoDTOResponse>> findByNumeroStartingWithIgnoreCase(
 	         @RequestParam("numero") String numero,
@@ -104,6 +113,31 @@ public class EnderecoController {
 	         Locale locale) {
 
 	     Page<EnderecoDTOResponse> enderecoPage = service.findByNumeroStartingWithIgnoreCase(numero, locale, pageable);
+	     return ResponseEntity.ok(enderecoPage);
+	 }
+	 
+	 @GetMapping("/enderecos/numero-less-than-equal")
+	 public Page<EnderecoDTOResponse> findByNumeroLessThanOrEqual(
+	         @RequestParam("numero") String numero,
+	         @RequestParam(value = "page", defaultValue = "0") int page,
+	         @RequestParam(value = "size", defaultValue = "10") int size,
+	         Locale locale) {
+
+	     Pageable pageable = PageRequest.of(page, size);
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByNumeroLessThanOrEqual(numero, locale, pageable);
+
+	     return enderecoPage;
+	 }
+
+	 @GetMapping("/enderecos/numero-greater-than-equal")
+	 public ResponseEntity<Page<EnderecoDTOResponse>> findByNumeroGreaterThanOrEqual(
+	         @RequestParam("numero") String numero,
+	         @RequestParam(value = "page", defaultValue = "0") int page,
+	         @RequestParam(value = "size", defaultValue = "10") int size,
+	         Locale locale
+	 ) {
+	     Pageable pageable = PageRequest.of(page, size);
+	     Page<EnderecoDTOResponse> enderecoPage = service.findByNumeroGreaterThanOrEqual(numero, locale, pageable);
 	     return ResponseEntity.ok(enderecoPage);
 	 }
 	 

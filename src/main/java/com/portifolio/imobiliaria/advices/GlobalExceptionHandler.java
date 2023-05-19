@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+import com.portifolio.imobiliaria.exception.DuplicatedCnpjException;
+import com.portifolio.imobiliaria.exception.DuplicatedCpfException;
 import com.portifolio.imobiliaria.exception.InvalidDocumentException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -116,4 +118,25 @@ public class GlobalExceptionHandler {
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(errorResponse, headers, HttpStatus.BAD_REQUEST);    	
     }
+    
+    @ExceptionHandler(DuplicatedCnpjException.class)
+    public ResponseEntity<Object> handleDuplicatedCnpjException(DuplicatedCnpjException ex, WebRequest request) {
+    	String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+    	Map<String, Object> errorResponse = errorHandleResponse
+                .createCustomErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), path);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(errorResponse, headers, HttpStatus.BAD_REQUEST);    	
+    }
+    
+    @ExceptionHandler(DuplicatedCpfException.class)
+    public ResponseEntity<Object> handleDuplicatedCpfException(DuplicatedCpfException ex, WebRequest request) {
+    	String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+    	Map<String, Object> errorResponse = errorHandleResponse
+                .createCustomErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), path);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(errorResponse, headers, HttpStatus.BAD_REQUEST);    	
+    }
+    
 }

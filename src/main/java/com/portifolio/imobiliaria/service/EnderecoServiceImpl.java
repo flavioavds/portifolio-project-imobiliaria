@@ -223,6 +223,71 @@ public class EnderecoServiceImpl implements EnderecoService{
 
 	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
 	}
+	
+	@Override
+	public Page<EnderecoDTOResponse> findByNumeroBetween(String numero, Integer numeroInicial, Integer numeroFinal, Locale locale, Pageable pageable) {
+	    Page<Endereco> enderecoPage = repository.findAll(pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage.getContent()
+	            .stream()
+	            .filter(endereco -> {
+	                Integer enderecoNumero = extractNumericValues(endereco.getNumero());
+	                return enderecoNumero >= numeroInicial && enderecoNumero <= numeroFinal;
+	            })
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
+	}
+
+	
+	public Page<Integer> findByNumeroExtract(String numero, Pageable pageable) {
+	    Page<Endereco> enderecoPage = repository.findByNumero(numero, pageable);
+
+	    List<Integer> numerosExtraidos = enderecoPage.getContent()
+	            .stream()
+	            .map(endereco -> extractNumericValues(endereco.getNumero()))
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(numerosExtraidos, pageable, enderecoPage.getTotalElements());
+	}
+
+	private Integer extractNumericValues(String value) {
+	    String numericValue = value.replaceAll("\\D+", "");
+	    return Integer.parseInt(numericValue);
+	}
+	
+	@Override
+	public Page<EnderecoDTOResponse> findByNumeroLessThanOrEqual(String numero, Locale locale, Pageable pageable) {
+	    Page<Endereco> enderecoPage = repository.findAll(pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage.getContent()
+	            .stream()
+	            .filter(endereco -> {
+	                Integer enderecoNumero = extractNumericValues(endereco.getNumero());
+	                return enderecoNumero <= extractNumericValues(numero);
+	            })
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
+	}
+
+	@Override
+	public Page<EnderecoDTOResponse> findByNumeroGreaterThanOrEqual(String numero, Locale locale, Pageable pageable) {
+	    Page<Endereco> enderecoPage = repository.findAll(pageable);
+
+	    List<EnderecoDTOResponse> enderecoDTOResponses = enderecoPage.getContent()
+	            .stream()
+	            .filter(endereco -> {
+	                Integer enderecoNumero = extractNumericValues(endereco.getNumero());
+	                return enderecoNumero >= extractNumericValues(numero);
+	            })
+	            .map(this::mapEnderecoDTOResponse)
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(enderecoDTOResponses, pageable, enderecoPage.getTotalElements());
+	}
 
 	@Override
 	public Page<EnderecoDTOResponse> findByBairroStartingWithIgnoreCase(String bairro, Locale locale,
@@ -290,5 +355,5 @@ public class EnderecoServiceImpl implements EnderecoService{
 		return enderecoDTOResponse;
 	}
 	
-
 }
+
