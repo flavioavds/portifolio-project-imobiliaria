@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEvent;
 import com.portifolio.imobiliaria.dtos.person.CnpjDTOResponse;
 import com.portifolio.imobiliaria.dtos.person.CpfDTOResponse;
 import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
+import com.portifolio.imobiliaria.security.auth.AuthenticationResponse;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,12 +22,20 @@ public class OnRegistrationSuccessEvent extends ApplicationEvent{
     private String appUrl;
 	private Locale locale;
 	private UserSignupDTOResponse user;
+	private AuthenticationResponse auth;
 	private CpfDTOResponse cpf;
 	private CnpjDTOResponse cnpj;
 
     public OnRegistrationSuccessEvent(UserSignupDTOResponse user, Locale locale, String appUrl) {
         super(user);
         this.user = user;
+		this.locale = locale;
+		this.appUrl = appUrl;
+    }
+    
+    public OnRegistrationSuccessEvent(AuthenticationResponse auth, Locale locale, String appUrl) {
+        super(auth);
+        this.auth = auth;
 		this.locale = locale;
 		this.appUrl = appUrl;
     }

@@ -2,8 +2,6 @@ package com.portifolio.imobiliaria.entities;
 
 import java.util.UUID;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -25,9 +23,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Socio {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Id
+	@GeneratedValue
     private UUID id;
 
     @Column(nullable = false)

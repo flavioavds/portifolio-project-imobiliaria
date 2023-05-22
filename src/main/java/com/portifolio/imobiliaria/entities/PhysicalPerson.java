@@ -2,8 +2,6 @@ package com.portifolio.imobiliaria.entities;
 
 import java.util.UUID;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,8 +19,7 @@ import lombok.NoArgsConstructor;
 public class PhysicalPerson {
 	
 	@Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue
     private UUID id;
 
     @Column(nullable = false)

@@ -1,10 +1,14 @@
 package com.portifolio.imobiliaria.entities;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,19 +24,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
 @Table(name = "tb_users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-	
+public class User implements UserDetails{
+	private static final long serialVersionUID = 1L;
+
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue
 	private UUID id;
 	
 	private String name;
@@ -46,9 +52,36 @@ public class User {
     @CollectionTable(name = "tb_users_roles")
     @OrderColumn(name = "role_index")
     @Column(name = "role")
+	@Builder.Default
 	private Set<Role> roles = new HashSet<>();
 	
 	@JsonIgnore
+	@Builder.Default
 	private boolean deleted = Boolean.FALSE;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole())).collect(Collectors.toList());
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isAccountNonLocked() {
+	    return enabled;
+	}
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 	
 }

@@ -2,8 +2,6 @@ package com.portifolio.imobiliaria.entities;
 
 import java.util.UUID;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -20,8 +18,7 @@ import lombok.NoArgsConstructor;
 public class Endereco {
 	
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GeneratedValue
 	private UUID id;
 	private String cep;
 	private String logradouro;
