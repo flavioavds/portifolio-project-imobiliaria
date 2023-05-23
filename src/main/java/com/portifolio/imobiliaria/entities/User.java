@@ -21,6 +21,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -58,6 +59,17 @@ public class User implements UserDetails{
 	@JsonIgnore
 	@Builder.Default
 	private boolean deleted = Boolean.FALSE;
+	
+	@Lob
+    private byte[] imagePerfil;
+	
+	public void updateProfileImage(byte[] imageBytes) {
+        this.imagePerfil = imageBytes;
+    }
+	
+	public byte[] getProfileImage() {
+        return this.imagePerfil;
+    }
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

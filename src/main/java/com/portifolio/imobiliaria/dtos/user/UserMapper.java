@@ -19,6 +19,13 @@ public class UserMapper {
 		return user;
 	}
 	
+	public static UserDTOImageResponse fromEntityImage(User user) {
+		UserDTOImageResponse userDTOImageResponse = new UserDTOImageResponse(
+				user.getId(),
+				user.getImagePerfil());
+		return userDTOImageResponse;
+	}
+	
 	public static UserDTOResponse fromEntity(User user) {
 		UserDTOResponse userDTOResponse = new UserDTOResponse(
 				user.getId(), 

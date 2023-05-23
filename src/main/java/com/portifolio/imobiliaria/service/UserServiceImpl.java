@@ -1,5 +1,6 @@
 package com.portifolio.imobiliaria.service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.portifolio.imobiliaria.dtos.user.UpdateUserDTO;
+import com.portifolio.imobiliaria.dtos.user.UserDTOImageResponse;
 import com.portifolio.imobiliaria.dtos.user.UserDTORequest;
 import com.portifolio.imobiliaria.dtos.user.UserDTOResponse;
 import com.portifolio.imobiliaria.dtos.user.UserMapper;
 import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
 import com.portifolio.imobiliaria.entities.Role;
 import com.portifolio.imobiliaria.entities.User;
+import com.portifolio.imobiliaria.exception.ImageProcessingException;
 import com.portifolio.imobiliaria.repositories.UserRepository;
+import com.portifolio.imobiliaria.service.utils.ImageUtils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -160,6 +165,55 @@ public class UserServiceImpl implements UserService{
 
         return UserMapper.fromEntity(optional.get());
 	}
+	
+	@Override
+	public UserDTOImageResponse updateProfileImage(UUID userId, byte[] imageBytes, Locale locale) {
+	    User user = userVerify(userId, locale);
 
+	    try {
+	        String folderPath = "C:\\meuProjeto\\imagens";
+	        String extension = determineImageExtension(imageBytes);
+	        String fileName = userId.toString() + extension;
+	        ImageUtils.saveImageToDisk(imageBytes, folderPath, fileName);
+
+	        user.updateProfileImage(imageBytes);
+	        userRepository.save(user);
+
+	        UserDTOImageResponse response = UserDTOImageResponse.builder()
+	                .id(user.getId())
+	                .imagePerfil(user.getImagePerfil())
+	                .build();
+
+	        return response;
+	    } catch (IOException e) {
+	        throw new ImageProcessingException("Erro ao salvar a imagem: " + e.getMessage());
+	    }
+	}
+
+	private String determineImageExtension(byte[] imageBytes) {
+	    String extension = Arrays.stream(new Object[][] {
+	            { (byte) 0xFF, (byte) 0xD8, ".jpg" },
+	            { (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, ".png" },
+	            { (byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xD9, ".jpeg" }
+	    })
+	            .filter(pattern -> matchesPattern(imageBytes, pattern))
+	            .findFirst()
+	            .map(pattern -> (String) pattern[pattern.length - 1])
+	            .orElseThrow(() -> new ImageProcessingException("Formato de imagem não suportado."));
+
+	    return extension;
+	}
+
+	private boolean matchesPattern(byte[] imageBytes, Object[] pattern) {
+	    return IntStream.range(0, pattern.length - 1)
+	            .allMatch(i -> imageBytes.length > i && imageBytes[i] == (byte) pattern[i]);
+	}
+	
+	@Override
+	public byte[] getProfileImage(UUID userId) {
+	    User user = userVerify(userId, null);
+	    return user.getImagePerfil();
+	}
+	
 }
 

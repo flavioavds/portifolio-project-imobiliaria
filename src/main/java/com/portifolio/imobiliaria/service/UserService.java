@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import com.portifolio.imobiliaria.dtos.user.UpdateUserDTO;
+import com.portifolio.imobiliaria.dtos.user.UserDTOImageResponse;
 import com.portifolio.imobiliaria.dtos.user.UserDTORequest;
 import com.portifolio.imobiliaria.dtos.user.UserDTOResponse;
 import com.portifolio.imobiliaria.dtos.user.UserSignupDTOResponse;
@@ -20,4 +21,6 @@ public interface UserService {
 	void inactivate(UUID id, Locale locale);    
     void activate(UUID id, Locale locale);
     UserDTOResponse findByEmail(String email, Locale locale);
+    UserDTOImageResponse updateProfileImage(UUID userId, byte[] imageBytes, Locale locale);
+    byte[] getProfileImage(UUID userId);
 }
